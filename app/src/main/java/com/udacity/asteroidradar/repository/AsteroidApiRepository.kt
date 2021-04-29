@@ -40,7 +40,7 @@ class AsteroidApiRepository(private val database: AsteroidsDatabase) {
         }
     }
 
-    suspend fun getAsteroidsJson() {
+    suspend fun refreshAsteroidsFromNetwork() {
         withContext(Dispatchers.IO) {
             val week = getNextSevenDaysFormattedDates()
             try {
@@ -52,7 +52,7 @@ class AsteroidApiRepository(private val database: AsteroidsDatabase) {
                         )
                     )
                 )
-                //database.asteroidDao.insertAll(*asteroidsResult.asDatabseModel())
+                database.asteroidDao.insertAll(*asteroidsResult.toTypedArray())
                 Log.d("RepoTAG", "getAsteroidsJson: success ${asteroidsResult.size}")
 
             } catch (e: Exception) {

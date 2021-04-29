@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,16 +8,18 @@ import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.network.AsteroidApi
 import com.udacity.asteroidradar.repository.AsteroidApiRepository
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-class MainViewModel : ViewModel() {
+class MainViewModel (application: Application): ViewModel() {
     //enum class MarsApiStatus { LOADING, ERROR, DONE }
     private val authToken = "xrPTulymFhQYzSnSOz8XOQhVSUKZxvdMcWikTMxs"
 
-    private val repository = AsteroidApiRepository()
+    private val database = getDatabase(application)
+    private val repository = AsteroidApiRepository(database)
 
     private val _status = MutableLiveData<String>()
 
@@ -46,7 +49,7 @@ class MainViewModel : ViewModel() {
 
     private fun getAsteroidsJson() {
         viewModelScope.launch {
-            repository.getAsteroidsJson()
+            repository.refreshAsteroidsFromNetwork()
 //            val week = getNextSevenDaysFormattedDates()
 //            try {
 //                val asteroidsResult = parseAsteroidsJsonResult(
