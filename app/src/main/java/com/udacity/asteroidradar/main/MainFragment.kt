@@ -14,7 +14,10 @@ class MainFragment : Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onViewCreated()"
         }
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -28,9 +31,9 @@ class MainFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        viewModel.sts.observe(viewLifecycleOwner, {
+        viewModel.asteroids.observe(viewLifecycleOwner, {
             it?.let {
-                Log.d("MainFragmentTag", "onCreateView: $it")
+                Log.d("MainFragmentTag", "onCreateView: ${it.size}")
             }
         })
 

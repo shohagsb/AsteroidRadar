@@ -26,7 +26,7 @@
 
             <ImageView
                 android:id="@+id/activity_main_image_of_the_day"
-                imageUrl="@{viewModel.pictureOfDay}"
+                imageUrl="@{viewModel.picOfDay}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
@@ -40,11 +40,11 @@
                 android:layout_gravity="bottom"
                 android:background="#55010613"
                 android:padding="16dp"
-                tools:text="@string/image_of_the_day"
-                android:text="@{viewModel.pictureOfDay.title}"
+                android:text="@{viewModel.picOfDay.title}"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="@string/image_of_the_day" />
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView

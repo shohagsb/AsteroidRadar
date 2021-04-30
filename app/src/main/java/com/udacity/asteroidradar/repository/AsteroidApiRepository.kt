@@ -1,11 +1,10 @@
 package com.udacity.asteroidradar.repository
 
-import android.util.Log
-import android.view.animation.Transformation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.AsteroidsDatabase
@@ -23,17 +22,17 @@ class AsteroidApiRepository(private val database: AsteroidsDatabase) {
     val status: LiveData<String>
         get() = _status
 
-    val asteroids: LiveData<List<Asteroid>> = Transformations
-        .map(database.asteroidDao.getAsteroids()) {
-            it.asDomainModel()
-        }
+    val asteroids: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroids()
+
+    private var _pictureOfDay = MutableLiveData<PictureOfDay>()
+    val pictureOfDay: LiveData<PictureOfDay>
+        get() = _pictureOfDay
 
     suspend fun getPictureOfDay() {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Main) {
             try {
                 val picResult = AsteroidApi.retrofitService.getPictureOfDay(authToken)
-
-
+                _pictureOfDay.value = picResult
             } catch (e: Exception) {
 
             }
@@ -53,10 +52,8 @@ class AsteroidApiRepository(private val database: AsteroidsDatabase) {
                     )
                 )
                 database.asteroidDao.insertAll(*asteroidsResult.toTypedArray())
-                Log.d("RepoTAG", "getAsteroidsJson: success ${asteroidsResult.size}")
-
             } catch (e: Exception) {
-                Log.d("RepoTAG", "getAsteroidsJson: Failure ${e.message}")
+
             }
         }
     }
