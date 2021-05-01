@@ -2,7 +2,6 @@ package com.udacity.asteroidradar
 
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -11,8 +10,10 @@ import com.udacity.asteroidradar.main.AsteroidAdapter
 
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
-    val adapter = recyclerView.adapter as AsteroidAdapter
-    adapter.submitList(data)
+    data?.let {
+        val adapter = recyclerView.adapter as AsteroidAdapter
+        adapter.submitList(data)
+    }
 }
 
 @BindingAdapter("statusIcon")

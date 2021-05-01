@@ -29,11 +29,17 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        binding.asteroidRecycler.adapter = AsteroidAdapter()
+
         setHasOptionsMenu(true)
 
         viewModel.asteroids.observe(viewLifecycleOwner, {
             it?.let {
-                Log.d("MainFragmentTag", "onCreateView: ${it.size}")
+                //Log.d("MainFragmentTag", "onCreateView: ${it[0].absoluteMagnitude}")
+                Log.d("MainFragmentTag", "onCreateView: ${it[0].closeApproachDate}")
+                //Log.d("MainFragmentTag", "onCreateView: ${it[0].codename}")
+                //Log.d("MainFragmentTag", "onCreateView: ${it[0].distanceFromEarth}")
+                //Log.d("MainFragmentTag", "onCreateView: ${it[0].estimatedDiameter}")
             }
         })
 
