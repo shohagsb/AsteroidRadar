@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidApiRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -24,18 +25,14 @@ class MainViewModel(application: Application) : ViewModel() {
             repository.getPictureOfDay()
         }
     }
-
     val picOfDay = repository.pictureOfDay
-
 
     private fun getAsteroidsJson() {
         viewModelScope.launch {
             repository.refreshAsteroidsFromNetwork()
         }
     }
-
     val asteroids = repository.asteroids
-
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
