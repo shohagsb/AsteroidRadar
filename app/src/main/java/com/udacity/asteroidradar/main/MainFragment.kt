@@ -3,10 +3,13 @@ package com.udacity.asteroidradar.main
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.detail.DetailFragment
 
 class MainFragment : Fragment() {
 
@@ -29,17 +32,19 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        binding.asteroidRecycler.adapter = AsteroidAdapter()
+        binding.asteroidRecycler.adapter = AsteroidAdapter(AsteroidListener { asteroidId ->
+            viewModel.onAsteroidClicked(asteroidId)
+        })
 
         setHasOptionsMenu(true)
 
-        viewModel.asteroids.observe(viewLifecycleOwner, {
-            it?.let {
-                //Log.d("MainFragmentTag", "onCreateView: ${it[0].absoluteMagnitude}")
-                Log.d("MainFragmentTag", "onCreateView: ${it[0].closeApproachDate}")
-                //Log.d("MainFragmentTag", "onCreateView: ${it[0].codename}")
-                //Log.d("MainFragmentTag", "onCreateView: ${it[0].distanceFromEarth}")
-                //Log.d("MainFragmentTag", "onCreateView: ${it[0].estimatedDiameter}")
+        viewModel.navigateToDetailFragment.observe(viewLifecycleOwner, {
+            it?.let { asteroid ->
+                this.findNavController().navigate(
+                    MainFragmentDirections
+                        .actionShowDetail(asteroid)
+                )
+                viewModel.onAsteroidNavigated()
             }
         })
 

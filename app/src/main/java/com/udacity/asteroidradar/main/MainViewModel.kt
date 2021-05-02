@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.main
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidApiRepository
 import kotlinx.coroutines.flow.collect
@@ -25,6 +26,7 @@ class MainViewModel(application: Application) : ViewModel() {
             repository.getPictureOfDay()
         }
     }
+
     val picOfDay = repository.pictureOfDay
 
     private fun getAsteroidsJson() {
@@ -32,7 +34,20 @@ class MainViewModel(application: Application) : ViewModel() {
             repository.refreshAsteroidsFromNetwork()
         }
     }
+
     val asteroids = repository.asteroids
+
+    private val _navigateToDetailFragment = MutableLiveData<Asteroid?>()
+    val navigateToDetailFragment: MutableLiveData<Asteroid?>
+        get() = _navigateToDetailFragment
+
+    fun onAsteroidClicked(asteroid: Asteroid) {
+        _navigateToDetailFragment.value = asteroid
+    }
+
+    fun onAsteroidNavigated() {
+        _navigateToDetailFragment.value = null
+    }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
