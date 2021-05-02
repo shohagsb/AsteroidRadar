@@ -5,13 +5,10 @@ import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidApiRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 class MainViewModel(application: Application) : ViewModel() {
-    //enum class MarsApiStatus { LOADING, ERROR, DONE }
-    //private val authToken = "xrPTulymFhQYzSnSOz8XOQhVSUKZxvdMcWikTMxs"
 
     private val database = getDatabase(application)
     private val repository = AsteroidApiRepository(database)

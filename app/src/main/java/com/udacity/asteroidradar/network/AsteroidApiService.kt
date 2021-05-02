@@ -37,7 +37,7 @@ interface AsteroidApiService {
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER
 )
-@Retention()
+@Retention
 internal annotation class StringAnnotation
 
 @Target(
@@ -45,7 +45,7 @@ internal annotation class StringAnnotation
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER
 )
-@Retention()
+@Retention
 internal annotation class JsonAnnotation
 
 object AsteroidApi {
