@@ -15,12 +15,14 @@ import org.json.JSONObject
 private const val authToken = "xrPTulymFhQYzSnSOz8XOQhVSUKZxvdMcWikTMxs"
 
 class AsteroidApiRepository(private val database: AsteroidsDatabase) {
-
+    private val week = getNextSevenDaysFormattedDates()
     private var _status = MutableLiveData<String>()
     val status: LiveData<String>
         get() = _status
 
-    val asteroids: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroids()
+    val weeksAsteroids: LiveData<List<Asteroid>> = database.asteroidDao.getWeeksAsteroids(week.first())
+    val todayAsteroids: LiveData<List<Asteroid>> = database.asteroidDao.getTodayAsteroids(week.first())
+    val savedAsteroids: LiveData<List<Asteroid>> = database.asteroidDao.getSavedAsteroids()
 
     private var _pictureOfDay = MutableLiveData<PictureOfDay>()
     val pictureOfDay: LiveData<PictureOfDay>
@@ -39,7 +41,6 @@ class AsteroidApiRepository(private val database: AsteroidsDatabase) {
 
     suspend fun refreshAsteroidsFromNetwork() {
         withContext(Dispatchers.IO) {
-            val week = getNextSevenDaysFormattedDates()
             try {
                 val asteroidsResult = parseAsteroidsJsonResult(
                     JSONObject(

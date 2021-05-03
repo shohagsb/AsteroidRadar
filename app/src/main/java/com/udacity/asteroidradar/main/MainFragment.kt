@@ -48,6 +48,10 @@ class MainFragment : Fragment() {
             }
         })
 
+        viewModel.asteroids.observe(viewLifecycleOwner, {
+            Log.d("MainFragmentTag", "onCreateView: ${it.size}")
+        })
+
         return binding.root
     }
 
@@ -57,6 +61,14 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.updateFilter(
+            when (item.itemId) {
+                R.id.show_week_menu -> AsteroidFilter.WEEK
+                R.id.show_today_menu -> AsteroidFilter.TODAY
+                else -> AsteroidFilter.SAVED
+            }
+        )
+
         return true
     }
 }
