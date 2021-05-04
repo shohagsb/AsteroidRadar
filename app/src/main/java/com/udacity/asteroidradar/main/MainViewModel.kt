@@ -12,13 +12,13 @@ enum class AsteroidFilter { WEEK, TODAY, SAVED }
 class MainViewModel(application: Application) : ViewModel() {
     private val database = getDatabase(application)
     private val repository = AsteroidApiRepository(database)
+    private val selectedFilter = MutableLiveData<AsteroidFilter>()
 
-    var asteroids: LiveData<List<Asteroid>>
+
 
     init {
         getPictureOfDay()
         getAsteroidsJson()
-        asteroids = repository.weeksAsteroids
     }
 
     private fun getPictureOfDay() {
@@ -48,12 +48,18 @@ class MainViewModel(application: Application) : ViewModel() {
         _navigateToDetailFragment.value = null
     }
 
-    fun updateFilter(filter: AsteroidFilter) {
-        if (filter == AsteroidFilter.TODAY) {
-            asteroids = repository.todayAsteroids
-            Log.d("MainFragmentTag", "onCreateView: ${repository.todayAsteroids.value?.size}")
-
+    val asteroids: LiveData<List<Asteroid>> = selectedFilter.switchMap { filter ->
+        if ((filter == null) || (filter.equals(AsteroidFilter.SAVED))) {
+            repository.savedAsteroids
+        } else if (filter.equals(AsteroidFilter.TODAY)) {
+            repository.todayAsteroids
+        } else {
+            repository.weeksAsteroids
         }
+    }
+
+    fun updateFilter(filter: AsteroidFilter) {
+        selectedFilter.value = filter
 //        asteroids = when (filter) {
 //            AsteroidFilter.WEEK -> repository.weeksAsteroids
 //            AsteroidFilter.TODAY -> repository.todayAsteroids
