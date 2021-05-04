@@ -1,7 +1,6 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.database.getDatabase
@@ -12,13 +11,12 @@ enum class AsteroidFilter { WEEK, TODAY, SAVED }
 class MainViewModel(application: Application) : ViewModel() {
     private val database = getDatabase(application)
     private val repository = AsteroidApiRepository(database)
-    private val selectedFilter = MutableLiveData<AsteroidFilter>()
-
-
+    private val selectedFilter = MutableLiveData<AsteroidFilter?>()
 
     init {
         getPictureOfDay()
         getAsteroidsJson()
+        selectedFilter.value = null
     }
 
     private fun getPictureOfDay() {
@@ -49,9 +47,9 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     val asteroids: LiveData<List<Asteroid>> = selectedFilter.switchMap { filter ->
-        if ((filter == null) || (filter.equals(AsteroidFilter.SAVED))) {
+        if ((filter == null) || (filter == AsteroidFilter.SAVED)) {
             repository.savedAsteroids
-        } else if (filter.equals(AsteroidFilter.TODAY)) {
+        } else if (filter == AsteroidFilter.TODAY) {
             repository.todayAsteroids
         } else {
             repository.weeksAsteroids
@@ -60,13 +58,6 @@ class MainViewModel(application: Application) : ViewModel() {
 
     fun updateFilter(filter: AsteroidFilter) {
         selectedFilter.value = filter
-//        asteroids = when (filter) {
-//            AsteroidFilter.WEEK -> repository.weeksAsteroids
-//            AsteroidFilter.TODAY -> repository.todayAsteroids
-//            else -> repository.savedAsteroids
-//        }
-
-
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

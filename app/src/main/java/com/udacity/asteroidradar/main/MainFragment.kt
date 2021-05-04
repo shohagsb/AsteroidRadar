@@ -48,10 +48,6 @@ class MainFragment : Fragment() {
             }
         })
 
-        viewModel.asteroids.observe(viewLifecycleOwner, {
-            Log.d("MainFragmentTag", "onCreateView: ${it.size}")
-        })
-
         return binding.root
     }
 
