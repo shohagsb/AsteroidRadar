@@ -2,6 +2,7 @@ package com.udacity.asteroidradar.repository
 
 
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-private const val authToken = "xrPTulymFhQYzSnSOz8XOQhVSUKZxvdMcWikTMxs"
+private const val authToken = Constants.API_KEY
 
 class AsteroidApiRepository(private val database: AsteroidsDatabase) {
     private val week = getNextSevenDaysFormattedDates()
