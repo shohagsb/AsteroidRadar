@@ -19,21 +19,29 @@ private const val authToken = "xrPTulymFhQYzSnSOz8XOQhVSUKZxvdMcWikTMxs"
 class AsteroidApiRepository(private val database: AsteroidsDatabase) {
     private val week = getNextSevenDaysFormattedDates()
 
+    // Retrieve weekly Asteroids from DB
     val weeksAsteroids: Flow<List<Asteroid>>
         get() = database.asteroidDao.getWeeksAsteroids(week.first())
-
+    // Retrieve today's Asteroids from DB
     val todayAsteroids: Flow<List<Asteroid>>
         get() = database.asteroidDao.getTodayAsteroids(week.first())
 
+    // Retrieve all saved Asteroids from DB
     val savedAsteroids: Flow<List<Asteroid>>
         get() = database.asteroidDao.getSavedAsteroids()
 
+    //Fetched pic of the day form Network
     val getPictureOfDay: Flow<PictureOfDay> = flow {
         val pictureOfDay = AsteroidApi.retrofitService.getPictureOfDay(authToken)
         emit(pictureOfDay)
     }.flowOn(Dispatchers.IO)
 
+    // Delete Previous data from DB
+    suspend fun deletePreviousData() {
+        database.asteroidDao.deletePreviousAsteroids(week.first())
+    }
 
+    // Fetch data from Network and insert to DB
     suspend fun refreshAsteroidsFromNetwork() {
         withContext(Dispatchers.IO) {
             try {

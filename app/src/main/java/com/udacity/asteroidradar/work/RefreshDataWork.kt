@@ -17,7 +17,8 @@ class RefreshDataWork(appContext: Context, params: WorkerParameters) :
         val database = getDatabase(applicationContext)
         val repository = AsteroidApiRepository(database)
         return try {
-            repository.refreshAsteroidsFromNetwork()
+            repository.deletePreviousData() // Delete previous Asteroids from DB
+            repository.refreshAsteroidsFromNetwork()  // Fetch data from Network and insert to DB
             Result.success()
         } catch (exception: HttpException) {
             Result.retry()
