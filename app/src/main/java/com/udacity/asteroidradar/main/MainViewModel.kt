@@ -3,8 +3,11 @@ package com.udacity.asteroidradar.main
 import android.app.Application
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidApiRepository
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 enum class AsteroidFilter { WEEK, TODAY, SAVED }
@@ -19,20 +22,25 @@ class MainViewModel(application: Application) : ViewModel() {
         selectedFilter.value = null
     }
 
+    private val _picOfDay = MutableLiveData<PictureOfDay>()
+    val picOfDay: LiveData<PictureOfDay>
+        get() = _picOfDay
+
     private fun getPictureOfDay() {
         viewModelScope.launch {
-            repository.getPictureOfDay()
+            repository.getPictureOfDay
+                .catch {   }
+                .collect { pic ->
+                    _picOfDay.value = pic
+                }
         }
     }
-
-    val picOfDay = repository.pictureOfDay
 
     private fun getAsteroidsJson() {
         viewModelScope.launch {
             repository.refreshAsteroidsFromNetwork()
         }
     }
-
 
     private val _navigateToDetailFragment = MutableLiveData<Asteroid?>()
     val navigateToDetailFragment: MutableLiveData<Asteroid?>
@@ -47,12 +55,12 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     val asteroids: LiveData<List<Asteroid>> = selectedFilter.switchMap { filter ->
-        if ((filter == null) || (filter == AsteroidFilter.SAVED)) {
-            repository.savedAsteroids
+        if ((filter == null) || (filter == AsteroidFilter.WEEK)) {
+            repository.weeksAsteroids.asLiveData()
         } else if (filter == AsteroidFilter.TODAY) {
-            repository.todayAsteroids
+            repository.todayAsteroids.asLiveData()
         } else {
-            repository.weeksAsteroids
+            repository.savedAsteroids.asLiveData()
         }
     }
 

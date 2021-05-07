@@ -54,14 +54,15 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
 
 @BindingAdapter("imageUrl")
 fun bindImage(imageView: ImageView, pictureOfDay: PictureOfDay?) {
-    pictureOfDay?.let {
-        val imgUri = it.url
-
+    if (pictureOfDay != null) {
+        val imgUri = pictureOfDay.url
         Picasso.get()
             .load(imgUri)
             .placeholder(R.drawable.loading_animation)
             .error(R.drawable.ic_broken_image)
             .into(imageView)
+    } else {
+        imageView.setImageResource(R.drawable.ic_broken_image)
     }
 }
 
